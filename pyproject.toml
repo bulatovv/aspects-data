@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "abas-study-feedbacks-research"
+version = "0.1.0"
+description = ""
+authors = ["daniil7 <daniil.k@mail.ru>", "bulatovv <albert.fz@yandex.ru>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^2.1.4"
+tqdm = "^4.66.1"
+jupyter = "^1.0.0"
+pke = {git = "https://github.com/boudinfl/pke.git"}
+transformers = "^4.38.2"
+sentence-transformers = "^2.5.1"
+torch = "^2.2.1"
+natasha = "^1.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
