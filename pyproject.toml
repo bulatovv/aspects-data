@@ -15,6 +15,8 @@ transformers = "^4.38.2"
 sentence-transformers = "^2.5.1"
 torch = "^2.2.1"
 natasha = "^1.6.0"
+pyunpack = "^0.3"
+patool = "^2.2.0"
 
 [build-system]
 requires = ["poetry-core"]
