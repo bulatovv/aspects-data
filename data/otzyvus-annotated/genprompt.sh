@@ -41,4 +41,4 @@ escaped_examples=${examples//$'\n'/\\n}
 
 sed "s/{{topic}}/${aspect}/g
      s/{{fragments}}/${fragments}/g
-     s/{{examples}}/${escaped_examples}/g" prompt.md
+     s~{{examples}}~${escaped_examples}~g" prompt.md
