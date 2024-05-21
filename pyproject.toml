@@ -17,6 +17,7 @@ torch = "^2.2.1"
 natasha = "^1.6.0"
 pyunpack = "^0.3"
 patool = "^2.2.0"
+openai = "^1.28.1"
 
 [build-system]
 requires = ["poetry-core"]
