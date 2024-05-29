@@ -1,0 +1,7 @@
+Вот текст отзыва:
+
+{original_feedback}
+
+Метки аспектных классов и sentiment:
+
+{sentiment}
