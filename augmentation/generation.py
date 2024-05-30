@@ -26,7 +26,7 @@ def make_generation_request(current_feedback: int,
             course_name = course_name,
             sentiment = "\n".join(sentiments)
         ),
-        assistant_prompt="",
+        assistant_prompt="Отзыв студента на курс:\n",
     )
     return response
 
