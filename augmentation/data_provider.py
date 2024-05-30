@@ -21,6 +21,10 @@ class DataProvider():
             "filename": config.DATA_ELECTIVE_NAMES_FILENAME,
             "url": config.DATA_ELECTIVE_NAMES_URL
         },
+        "annotated_generation": {
+            "filename": config.DATA_ANNOTATED_GENERATION_FILENAME,
+            "url": config.DATA_ANNOTATED_GENERATION_URL
+        },
     }
 
     @staticmethod
