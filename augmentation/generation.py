@@ -19,7 +19,7 @@ def make_generation_request(current_feedback: int,
         2: "позитивный",
         3: "негативный",
     }
-    sentiments = [ i.replace("__", " ").capitalize() + ": " + label_to_sentiment[v] for i, v in generation_df.iloc[current_feedback].replace(0, pd.NA).dropna().items() ]
+    sentiments = [ i.replace("__", ", ").capitalize() + ": " + label_to_sentiment[v] for i, v in generation_df.iloc[current_feedback].replace(0, pd.NA).dropna().items() ]
     response = openai_client.gpt_request(
         system_prompt=PROMPT_SYSTEM,
         client_prompt=PROMPT_CLIENT.format(
