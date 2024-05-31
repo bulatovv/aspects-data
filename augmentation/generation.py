@@ -20,27 +20,15 @@ def make_generation_request(current_feedback: int,
         3: "негативный",
     }
     sentiments = [ i.replace("__", " и ").capitalize() + ": " + label_to_sentiment[v] for i, v in generation_df.iloc[current_feedback].replace(0, pd.NA).dropna().items() ]
+    random.shuffle(sentiments)
     response = openai_client.gpt_request(
         system_prompt=PROMPT_SYSTEM,
         client_prompt=PROMPT_CLIENT.format(
             course_name = course_name,
             sentiment = "\n".join(sentiments)
         ),
-        assistant_prompt="Отзыв студента на курс:\n",
-        few_shot=[
-            (
-                config.PROMPT_GENERATION_FEW_SHOT_CLIENT_1,
-                config.PROMPT_GENERATION_FEW_SHOT_ASSISTENT_1
-            ),
-            (
-                config.PROMPT_GENERATION_FEW_SHOT_CLIENT_2,
-                config.PROMPT_GENERATION_FEW_SHOT_ASSISTENT_2
-            ),
-            (
-                config.PROMPT_GENERATION_FEW_SHOT_CLIENT_3,
-                config.PROMPT_GENERATION_FEW_SHOT_ASSISTENT_3
-            ),
-        ]
+        assistant_prompt=None,
+        few_shot=config.PROMPT_GENERATION_FEW_SHOT
     )
     return response
 
@@ -68,7 +56,7 @@ def run_generation(delay: float):
             generation_df,
             elective_name
         )
-        print(current_feedback, "\n\n", response)
+        print("\n\n", current_feedback, "\n", response)
         out_df.at[current_feedback, "text"] = response
         if current_feedback % 10 == 0:
             out_df.to_csv(OUT_DIR, sep=",", index=False)
