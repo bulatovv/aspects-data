@@ -17,7 +17,7 @@ def make_augmentation_request(current_feedback: int,
         2: "позитивный",
         3: "негативный",
     }
-    sentiments = [ i.replace("__", ", ").capitalize() + ": " + label_to_sentiment[v] for i, v in annotated_df.iloc[current_feedback].dropna().drop("text").items() ]
+    sentiments = [ i.replace("__", " и ").capitalize() + ": " + label_to_sentiment[v] for i, v in annotated_df.iloc[current_feedback].dropna().drop("text").items() ]
     response = openai_client.gpt_request(
         system_prompt=PROMPT_SYSTEM,
         client_prompt=PROMPT_CLIENT.format(
