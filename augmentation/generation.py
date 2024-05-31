@@ -31,6 +31,9 @@ def make_generation_request(current_feedback: int,
     return response
 
 def run_generation(delay: float):
+
+    random.seed(42)
+
     elective_names = pd.read_csv(DataProvider.get_path("elective_names"), sep=",")["title"]
     generation_df = pd.read_csv(DataProvider.get_path("annotated_generation"), sep=",")
 
