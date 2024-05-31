@@ -27,6 +27,20 @@ def make_generation_request(current_feedback: int,
             sentiment = "\n".join(sentiments)
         ),
         assistant_prompt="Отзыв студента на курс:\n",
+        few_shot=[
+            (
+                config.PROMPT_GENERATION_FEW_SHOT_CLIENT_1,
+                config.PROMPT_GENERATION_FEW_SHOT_ASSISTENT_1
+            ),
+            (
+                config.PROMPT_GENERATION_FEW_SHOT_CLIENT_2,
+                config.PROMPT_GENERATION_FEW_SHOT_ASSISTENT_2
+            ),
+            (
+                config.PROMPT_GENERATION_FEW_SHOT_CLIENT_3,
+                config.PROMPT_GENERATION_FEW_SHOT_ASSISTENT_3
+            ),
+        ]
     )
     return response
 
