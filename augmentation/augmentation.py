@@ -28,12 +28,13 @@ def make_augmentation_request(current_feedback: int,
     )
     return response
 
-def run_augmentation(delay: float):
+def run_augmentation(delay: float, rows_count: int) -> pd.DataFrame:
     annotated_df = pd.read_csv(DataProvider.get_path("annotated"), sep=",")
 
     if not os.path.isfile(OUT_DIR):
         out_df = annotated_df.copy()
-        out_df['text'] = pd.NA
+        out_df.rename(columns={'text': 'original_text'}, inplace=True)
+        out_df.insert(loc=0, column="text", value=pd.NA) # type: ignore
         current_feedback = 0
     else:
         out_df = pd.read_csv(OUT_DIR, sep=",")
@@ -41,9 +42,11 @@ def run_augmentation(delay: float):
 
     print("start of augmentation")
 
-    while current_feedback < len(annotated_df):
+    while current_feedback < len(annotated_df) \
+            and (rows_count == 0 \
+                or current_feedback < rows_count):
         response = make_augmentation_request(current_feedback, annotated_df)
-        print(current_feedback, "\n\n", response)
+        print("\n\n", current_feedback, "\n", response)
         out_df.at[current_feedback, "text"] = response
         if current_feedback % 10 == 0:
             out_df.to_csv(OUT_DIR, sep=",", index=False)
@@ -51,3 +54,8 @@ def run_augmentation(delay: float):
         current_feedback += 1
     out_df.to_csv(OUT_DIR, sep=",", index=False)
     print("\nГОТОВО!")
+
+    if rows_count > 0:
+        out_df = out_df.head(rows_count)
+
+    return out_df
