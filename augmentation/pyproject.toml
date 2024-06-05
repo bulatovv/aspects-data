@@ -13,6 +13,12 @@ telethon = "^1.35.0"
 pandas = "^2.2.2"
 requests = "^2.32.1"
 openai = "^1.30.3"
+numpy = "^1.26.4"
+datasets = "^2.19.2"
+natasha = "^1.6.0"
+evaluate = "^0.4.2"
+bert-score = "^0.3.13"
+setuptools = "^70.0.0"
 
 
 [build-system]
