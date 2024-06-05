@@ -32,7 +32,7 @@ def make_generation_request(current_feedback: int,
     )
     return response
 
-def run_generation(delay: float):
+def run_generation(delay: float, rows_count: int) -> pd.DataFrame:
 
     random.seed(42)
 
@@ -49,7 +49,9 @@ def run_generation(delay: float):
 
     print("start of generation")
 
-    while current_feedback < len(generation_df):
+    while current_feedback < len(generation_df) \
+            and (rows_count == 0 \
+                or current_feedback < rows_count):
         elective_name = str(random.choice(elective_names))
         response = make_generation_request(
             current_feedback,
@@ -64,3 +66,8 @@ def run_generation(delay: float):
         current_feedback += 1
     out_df.to_csv(OUT_DIR, sep=",", index=False)
     print("\nГОТОВО!")
+    
+    if rows_count > 0:
+        out_df = out_df.head(rows_count)
+
+    return out_df
