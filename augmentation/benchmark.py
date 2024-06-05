@@ -59,7 +59,7 @@ def paraphrase_metrics(
         references=references,
         model_type='DeepPavlov/rubert-base-cased',
         num_layers=9,
-        #use_fast_tokenizer=True
+        use_fast_tokenizer=True
     )['f1']
     bleu = bleu_metric.compute(
         predictions=candidates,
