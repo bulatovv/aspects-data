@@ -7,7 +7,7 @@ from pathlib import Path
 from simple_term_menu import TerminalMenu
 from augmentation import run_augmentation
 from generation import run_generation
-from banchmark import paraphrase_metrics
+from benchmark import paraphrase_metrics
 
 def get_menu_option(menu_options: list[str]):
     terminal_menu = TerminalMenu(menu_options)
