@@ -1,4 +1,3 @@
-from evaluate import load
 from natasha import (
     Segmenter,
     MorphVocab, 
@@ -8,6 +7,22 @@ from natasha import (
 )
 import numpy as np
 
+import bert_score
+def custom_bertscore_tokenizer(tokenizer, sent):
+    return tokenizer.encode(
+        sent,
+        add_special_tokens=True,
+        max_length=512,
+        truncation=True,
+    )
+
+# monkey patch bertscore tokenizer
+bert_score.sent_encode.__code__ = custom_bertscore_tokenizer.__code__
+
+
+from transformers import AutoTokenizer
+from evaluate import load
+
 bertscore_metric = load('bertscore')
 bleu_metric = load('bleu')
 
@@ -15,6 +30,10 @@ segmenter = Segmenter()
 morph_vocab = MorphVocab()
 emb = NewsEmbedding()
 morph_tagger = NewsMorphTagger(emb)
+
+
+
+
 
 
 def tokenize(text: str) -> list[str]:
@@ -39,7 +58,8 @@ def paraphrase_metrics(
         predictions=candidates, 
         references=references,
         model_type='DeepPavlov/rubert-base-cased',
-        num_layers=9
+        num_layers=9,
+        #use_fast_tokenizer=True
     )['f1']
     bleu = bleu_metric.compute(
         predictions=candidates,
