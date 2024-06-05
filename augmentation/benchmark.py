@@ -7,7 +7,6 @@ from natasha import (
     Doc
 )
 import numpy as np
-import bert_score
 
 bertscore_metric = load('bertscore')
 bleu_metric = load('bleu')

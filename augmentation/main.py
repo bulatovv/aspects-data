@@ -7,6 +7,7 @@ from pathlib import Path
 from simple_term_menu import TerminalMenu
 from augmentation import run_augmentation
 from generation import run_generation
+from banchmark import paraphrase_metrics
 
 def get_menu_option(menu_options: list[str]):
     terminal_menu = TerminalMenu(menu_options)
@@ -27,9 +28,11 @@ def make_report_augmentation(df: pd.DataFrame):
     shutil.copy(config.PROMPT_AUGMENTATION_CLIENT_PATH, report_dir)
     shutil.copy(config.PROMPT_AUGMENTATION_SYSTEM_PATH, report_dir)
     df.to_csv(report_dir / "output.csv")
+    metrics = paraphrase_metrics(list(df["original_text"]) \
+                                 , list(df["text"]))
+    metrics_string = "\n".join([k + ": " + str(v) for k, v in metrics.items()])
     with open(report_dir / "metrics.txt", "w") as metrics_file:
-        metrics_file.write("BLEU: " + str(get_bleu_metrics(df["original_text"], df["text"])) \
-            + "\nLABSE: " + str(get_labse_metrics(df["original_text"], df["text"])))
+        metrics_file.write(metrics_string)
 
 # def make_report_generation(df: pd.DataFrame):
 #     report_dir = Path(config.DATA_DIRECTORY) / ("report_generation_" + str(int(time.time())))
