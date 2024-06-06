@@ -6,8 +6,7 @@ from transformers import (
     Trainer
 )
 import evaluate
-from datasets import Dataset, ClassLabel
-import polars as pl
+import datasets
 import numpy as np
 import torch
 
@@ -15,22 +14,20 @@ BASE_MODEL = "seninoseno/rubert-base-cased-sentiment-study-feedbacks-solyanka"
 
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, model_max_length=512)
 
+dataset = datasets.load_dataset(
+    "csv", 
+    data_files={
+        "train": "train_pairs.csv", 
+        "test": "test_pairs.csv"
+    },
+)
 
-train = Dataset(pl.read_csv('train_pairs.csv').to_arrow())
-valid = Dataset(pl.read_csv('valid_pairs.csv').to_arrow())
-
-train.rename_column("sentiment", "label")
-valid.rename_column("sentiment", "label")
-
-train.cast_column('label', ClassLabel(num_classes=4))
-valid.cast_column('label', ClassLabel(num_classes=4))
 
 def preprocess_function(examples):
     return tokenizer(text=examples['text'], text_pair=examples['aspect'], truncation='only_first')
 
 
-tokenized_train = train.map(preprocess_function, batched=True)
-tokenized_valid = valid.map(preprocess_function, batched=True)
+tokenized_dataset = dataset.map(preprocess_function, batched=True)
 
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
@@ -80,8 +77,8 @@ training_args = TrainingArguments(
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=tokenized_train,
-    eval_dataset=tokenized_valid,
+    train_dataset=tokenized_dataset['train'], # type ignore
+    eval_dataset=tokenized_dataset['valid'], # type ingore
     tokenizer=tokenizer,
     data_collator=data_collator,
     compute_metrics=compute_metrics,
