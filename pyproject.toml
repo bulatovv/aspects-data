@@ -13,6 +13,7 @@ evaluate = "^0.4.2"
 datasets = "^2.19.2"
 scikit-learn = "^1.5.0"
 matplotlib = "^3.9.0"
+pandas = "^2.2.2"
 
 [[tool.poetry.source]]
 name = "torch"
