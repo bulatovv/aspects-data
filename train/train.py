@@ -88,5 +88,40 @@ trainer = Trainer(
 
 trainer.train()
 
+import matplotlib.pyplot as plt
 
+# Функция для извлечения значений метрик из логов тренера
+def extract_metric_from_log(log_history, metric_name):
+    return [entry[metric_name] for entry in log_history if metric_name in entry]
 
+# Извлекаем значения метрик
+train_loss = extract_metric_from_log(trainer.state.log_history, 'loss')
+eval_loss = extract_metric_from_log(trainer.state.log_history, 'eval_loss')
+eval_f1 = extract_metric_from_log(trainer.state.log_history, 'eval_f1')
+
+# Построение графиков
+epochs = range(1, len(train_loss) + 1)
+
+plt.figure(figsize=(12, 4))
+
+# График потерь
+plt.subplot(1, 2, 1)
+plt.plot(epochs, train_loss, label='Training Loss')
+plt.plot(epochs, eval_loss, label='Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training and Validation Loss')
+plt.legend()
+
+# График F1-метрики
+plt.subplot(1, 2, 2)
+plt.plot(epochs, eval_f1, label='Validation F1 Score')
+plt.xlabel('Epochs')
+plt.ylabel('F1 Score')
+plt.title('Validation F1 Score')
+plt.legend()
+
+plt.tight_layout()
+
+# Сохраняем график в файл
+plt.savefig('training_history.png')
