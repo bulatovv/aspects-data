@@ -22,8 +22,11 @@ valid = Dataset(pl.read_csv('valid_pairs.csv').to_arrow())
 train.rename_column("sentiment", "label")
 valid.rename_column("sentiment", "label")
 
+train.cast_column('label', ClassLabel(num_classes=4))
+valid.cast_column('label', ClassLabel(num_classes=4))
+
 def preprocess_function(examples):
-    return tokenizer(examples['text'], examples['aspect'], truncation='only_first')
+    return tokenizer(text=examples['text'], text_pair=examples['aspect'], truncation='only_first')
 
 
 tokenized_train = train.map(preprocess_function, batched=True)
