@@ -56,8 +56,8 @@ def compute_metrics(eval_pred):
     predictions, labels = eval_pred
     predictions = np.argmax(predictions, axis=1)
 
-    precision_score = precision.compute(predictions=predictions, references=labels)
-    recall_score = recall.compute(predictions=predictions, references=labels)
+    precision_score = precision.compute(predictions=predictions, references=labels, average='macro')
+    recall_score = recall.compute(predictions=predictions, references=labels, average='macro')
     f1_score = f1.compute(predictions=predictions, references=labels, average='macro')
 
     return {'precision' : precision_score, 'recall' : recall_score, 'f1' : f1_score}
