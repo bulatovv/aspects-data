@@ -34,7 +34,11 @@ id2label = {0: "NOT-PRESENT", 1: "NEUTRAL", 2: "POSITIVE", 3: "NEGATIVE"}
 label2id = {"NOT-PRESENT": 0, "NEUTRAL": 1, "POSITIVE": 2, "NEGATIVE": 3}
 
 model = AutoModelForSequenceClassification.from_pretrained(
-    BASE_MODEL, num_labels=4, id2label=id2label, label2id=label2id
+    BASE_MODEL, 
+    num_labels=4,
+    id2label=id2label,
+    label2id=label2id,
+    ignore_mismatched_sizes=True
 )
 
 precision = evaluate.load("precision")
