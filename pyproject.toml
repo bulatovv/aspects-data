@@ -7,20 +7,16 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pandas = "^2.1.4"
-tqdm = "^4.66.1"
-jupyter = "^1.0.0"
-pke = {git = "https://github.com/boudinfl/pke.git"}
+torch = { version = "2.3.1", source="torch"}
 transformers = {extras = ["torch"], version = "^4.41.2"}
-sentence-transformers = "^2.5.1"
-torch = "^2.2.1"
-natasha = "^1.6.0"
-pyunpack = "^0.3"
-patool = "^2.2.0"
-openai = "^1.28.1"
-bert-score = "^0.3.13"
-polars = "^0.20.31"
 evaluate = "^0.4.2"
+datasets = "^2.19.2"
+
+[[tool.poetry.source]]
+name = "torch"
+url = "https://download.pytorch.org/whl/cu121"
+priority = 'supplemental'
+
 
 [build-system]
 requires = ["poetry-core"]
