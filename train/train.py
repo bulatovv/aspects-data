@@ -27,6 +27,7 @@ def preprocess_function(examples):
 
 
 tokenized_train = train.map(preprocess_function, batched=True)
+tokenized_valid = valid.map(preprocess_function, batched=True)
 
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
@@ -72,8 +73,8 @@ training_args = TrainingArguments(
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=train,
-    eval_dataset=valid,
+    train_dataset=tokenized_train,
+    eval_dataset=tokenized_valid,
     tokenizer=tokenizer,
     data_collator=data_collator,
     compute_metrics=compute_metrics,
