@@ -1,7 +1,14 @@
 import polars as pl
+import numpy as np
+import torch
 from ctgan import CTGAN
 from functools import reduce
 from operator import mul
+
+SEED_VALUE = 42
+
+np.random.seed(SEED_VALUE)
+torch.manual_seed(SEED_VALUE)
 
 q = pl.scan_csv('data.csv').select(pl.exclude('text')).with_columns(pl.col('эссе').cast(pl.Int64).alias('эссе'))
 
@@ -26,7 +33,6 @@ def generate_score_expr(null_score):
         ).otherwise(pl.lit(null_score).log())
         for c in q.columns
     ])
-
 
 ctgan = CTGAN(epochs=10)
 
