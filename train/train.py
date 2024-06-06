@@ -12,7 +12,7 @@ import numpy as np
 
 BASE_MODEL = "seninoseno/rubert-base-cased-sentiment-study-feedbacks-solyanka"
 
-tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, model_max_length=512)
 
 
 train = Dataset(pl.read_csv('train_pairs.csv').to_arrow())
