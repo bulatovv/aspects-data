@@ -18,6 +18,9 @@ natasha = "^1.6.0"
 pyunpack = "^0.3"
 patool = "^2.2.0"
 openai = "^1.28.1"
+bert-score = "^0.3.13"
+polars = "^0.20.31"
+evaluate = "^0.4.2"
 
 [build-system]
 requires = ["poetry-core"]
