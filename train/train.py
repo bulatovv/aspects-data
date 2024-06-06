@@ -18,7 +18,8 @@ dataset = datasets.load_dataset(
     "csv", 
     data_files={
         "train": "train_pairs.csv", 
-        "test": "test_pairs.csv"
+        "test": "test_pairs.csv",
+        "valid": "valid_pairs.csv"
     },
 )
 
