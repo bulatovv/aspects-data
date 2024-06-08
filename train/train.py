@@ -32,7 +32,7 @@ def preprocess_label(label):
 def preprocess_function(examples):
     return tokenizer(
         text=examples['text'],
-        text_pair=preprocess_label(examples['aspect']),
+        text_pair=list(map(preprocess_label, examples['aspect'])),
         truncation='only_first'
     )
 
