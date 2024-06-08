@@ -5,6 +5,7 @@ from transformers import (
     TrainingArguments,
     Trainer
 )
+from functools import cache
 import evaluate
 import datasets
 import numpy as np
@@ -23,9 +24,17 @@ dataset = datasets.load_dataset(
     },
 )
 
+@cache
+def preprocess_label(label):
+    return label.replace('__', ', ', label.count('__') - 1).replace('__', ' и ')
+
 
 def preprocess_function(examples):
-    return tokenizer(text=examples['text'], text_pair=examples['aspect'], truncation='only_first')
+    return tokenizer(
+        text=examples['text'],
+        text_pair=preprocess_label(examples['aspect']),
+        truncation='only_first'
+    )
 
 
 tokenized_dataset = dataset.map(preprocess_function, batched=True)
