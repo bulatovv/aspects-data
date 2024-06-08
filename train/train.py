@@ -10,7 +10,7 @@ import datasets
 import numpy as np
 import torch
 
-BASE_MODEL = "cointegrated/rubert-base-cased-nli-threeway"
+BASE_MODEL = "DeepPavlov/rubert-base-cased"
 
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, model_max_length=512)
 
