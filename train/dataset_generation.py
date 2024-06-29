@@ -36,7 +36,7 @@ dest_nan = (
     + len(melted[melted["source"] == "generation"])
     ) / 3
 train_nan = len(melted[(melted["source"] == "train") & (melted["sentiment"] == 0)])
-unwanted_nan = train_nan - dest_nan
+unwanted_nan = train_nan - dest_nan * 1.2
 
 if unwanted_nan > 0:
     melted.loc[melted["source"] == "train", "source"] = "_train"
