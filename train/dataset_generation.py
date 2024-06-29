@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 AUGMENTED_PATH = "datasets/augmented_2.csv"
 GENERATED_PATH = "datasets/generated_1.csv"
@@ -44,4 +45,7 @@ if unwanted_nan > 0:
     melted = melted[int(unwanted_nan):]
     melted.loc[melted["source"] == "_train", "source"] = "train"
 
+melted.rename(columns={"sentiment": "label"}, inplace=True)
+m = melted.select_dtypes(np.number)
+melted[m.columns]= m.round().astype('Int64')
 melted.to_csv(OUT_PATH, sep=",", index=False)
