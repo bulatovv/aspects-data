@@ -11,6 +11,7 @@ torch = { version = "2.3.1", source="torch"}
 transformers = {extras = ["torch"], version = "^4.41.2"}
 evaluate = "^0.4.2"
 datasets = "^2.19.2"
+razdel = "^0.5.0"
 scikit-learn = "^1.5.0"
 matplotlib = "^3.9.0"
 pandas = "^2.2.2"

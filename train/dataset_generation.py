@@ -1,11 +1,11 @@
 import pandas as pd
 
-AUGMENTED_PATH = "augmented_2.csv"
-GENERATED_PATH = "generated_1.csv"
-TEST_PATH = "test.csv"
-TRAIN_PATH = "train.csv"
-VALID_PATH = "valid.csv"
-OUT_PATH = "dataset.csv"
+AUGMENTED_PATH = "datasets/augmented_2.csv"
+GENERATED_PATH = "datasets/generated_1.csv"
+TEST_PATH = "datasets/test.csv"
+TRAIN_PATH = "datasets/train.csv"
+VALID_PATH = "datasets/valid.csv"
+OUT_PATH = "datasets/dataset.csv"
 
 augmented = pd.read_csv(AUGMENTED_PATH, sep=",")
 generated = pd.read_csv(GENERATED_PATH, sep=",")
@@ -28,17 +28,19 @@ melted.loc[melted["sentiment"].isna(), "sentiment"] = 0
 # Удалить нули в аугментации и генерации
 melted = melted[((melted["source"] != "augmentation") & (melted["source"] != "generation")) | (melted["sentiment"] != 0.0)]
 
-dest_nan = (len(melted[(melted["source"] == "train") & (melted["sentiment"] == 1)])
-    + len(melted[(melted["source"] == "test") & (melted["sentiment"] == 2)])
-    + len(melted[(melted["source"] == "test") & (melted["sentiment"] == 3)])) / 3
-dest_nan = (len(melted[(melted["source"] == "valid") & (melted["sentiment"] == 0)])
-    + len(melted[(melted["source"] == "test") & (melted["sentiment"] == 0)])) / 2
+dest_nan = (
+    len(melted[(melted["source"] == "train") & (melted["sentiment"] == 1)])
+    + len(melted[(melted["source"] == "train") & (melted["sentiment"] == 2)])
+    + len(melted[(melted["source"] == "train") & (melted["sentiment"] == 3)])
+    + len(melted[melted["source"] == "augmentation"])
+    + len(melted[melted["source"] == "generation"])
+    ) / 3
 train_nan = len(melted[(melted["source"] == "train") & (melted["sentiment"] == 0)])
-unwanted_nan = train_nan - dest_nan
+unwanted_nan = train_nan - dest_nan * 1.2
 
 if unwanted_nan > 0:
     melted.loc[melted["source"] == "train", "source"] = "_train"
-    melted = melted.sample(frac=1).sort_values(by=["source", "sentiment"])
+    melted = melted.sample(frac=1, random_state=42).sort_values(by=["source", "sentiment"])
     melted = melted[int(unwanted_nan):]
     melted.loc[melted["source"] == "_train", "source"] = "train"
 
