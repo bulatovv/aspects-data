@@ -26,7 +26,7 @@ dataset = datasets.load_dataset(
 
 @cache
 def preprocess_label(label):
-    return label.replace('__', ', ', label.count('__') - 1).replace('__', ' и ')
+    return label.replace('__', ', ')
 
 
 def preprocess_function(examples):
