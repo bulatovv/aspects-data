@@ -5,12 +5,13 @@ from transformers import (
     TrainingArguments,
     Trainer
 )
+from functools import cache
 import evaluate
 import datasets
 import numpy as np
 import torch
 
-BASE_MODEL = "seninoseno/rubert-base-cased-sentiment-study-feedbacks-solyanka"
+BASE_MODEL = "DeepPavlov/rubert-base-cased"
 
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, model_max_length=512)
 
@@ -23,9 +24,17 @@ dataset = datasets.load_dataset(
     },
 )
 
+@cache
+def preprocess_label(label):
+    return label.replace('__', ', ', label.count('__') - 1).replace('__', ' и ')
+
 
 def preprocess_function(examples):
-    return tokenizer(text=examples['text'], text_pair=examples['aspect'], truncation='only_first')
+    return tokenizer(
+        text=examples['text'],
+        text_pair=list(map(preprocess_label, examples['aspect'])),
+        truncation='only_first'
+    )
 
 
 tokenized_dataset = dataset.map(preprocess_function, batched=True)
@@ -56,8 +65,8 @@ def compute_metrics(eval_pred):
     predictions, labels = eval_pred
     predictions = np.argmax(predictions, axis=1)
 
-    precision_score = precision.compute(predictions=predictions, references=labels)
-    recall_score = recall.compute(predictions=predictions, references=labels)
+    precision_score = precision.compute(predictions=predictions, references=labels, average='macro')
+    recall_score = recall.compute(predictions=predictions, references=labels, average='macro')
     f1_score = f1.compute(predictions=predictions, references=labels, average='macro')
 
     return {'precision' : precision_score, 'recall' : recall_score, 'f1' : f1_score}
@@ -89,4 +98,13 @@ trainer = Trainer(
 trainer.train()
 
 
+import pandas as pd
 
+# Извлечение истории обучения
+log_history = trainer.state.log_history
+
+# Преобразование истории в DataFrame
+df = pd.DataFrame(log_history)
+
+# Сохранение DataFrame в CSV файл
+df.to_csv('training_history.csv', index=False)
