@@ -23,10 +23,10 @@ for i in range(4):
     print(f"sentiment {i}: {f1_score | precision_score | recall_score | accuracy_score}")
     
 df = q.collect()
-f1_score = f1.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
-precision_score = precision.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
-recall_score = recall.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
-accuracy_score = accuracy.compute(references=subset['sentiment'], predictions=subset['pred'])
+f1_score = f1.compute(references=df['sentiment'], predictions=df['pred'], average='macro')
+precision_score = precision.compute(references=df['sentiment'], predictions=df['pred'], average='macro')
+recall_score = recall.compute(references=df['sentiment'], predictions=df['pred'], average='macro')
+accuracy_score = accuracy.compute(references=df['sentiment'], predictions=df['pred'])
 
 
 print(f"avg for sentiment: f1 = {f1_score | precision_score | recall_score | accuracy_score}")
