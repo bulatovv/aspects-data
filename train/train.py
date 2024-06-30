@@ -59,6 +59,7 @@ model.to(device)
 precision = evaluate.load("precision")
 recall = evaluate.load("recall")
 f1 = evaluate.load("f1")
+accuracy = evaluate.load("accuracy")
 
 
 def compute_metrics(eval_pred):
@@ -68,8 +69,9 @@ def compute_metrics(eval_pred):
     precision_score = precision.compute(predictions=predictions, references=labels, average='macro')
     recall_score = recall.compute(predictions=predictions, references=labels, average='macro')
     f1_score = f1.compute(predictions=predictions, references=labels, average='macro')
+    accuracy_score = accuracy.compute(predictions=predictions, references=labels, average='macro')
 
-    return {'precision' : precision_score, 'recall' : recall_score, 'f1' : f1_score}
+    return {'precision' : precision_score, 'recall' : recall_score, 'f1' : f1_score, accuracy: accuracy_score}
 
 training_args = TrainingArguments(
     output_dir="study_absa",

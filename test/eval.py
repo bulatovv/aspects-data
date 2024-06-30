@@ -1,50 +1,63 @@
 import evaluate
+from numpy import average
 import polars as pl
 
 q = pl.scan_csv('predicts.csv')
 
 f1 = evaluate.load("f1")
-
-# class presense f1
-presense = q.with_columns(
-    pred=pl.col('pred').eq(0).not_().cast(pl.Int64),
-    sentiment=pl.col('sentiment').eq(0).not_().cast(pl.Int64),
-).collect()
-
-presense_score = f1.compute(
-    references=presense['sentiment'], 
-    predictions=presense['pred']
-)
-print(presense_score)
-
-
-# f1 for found
-found = q.filter(pl.col('pred') != 0).collect()
-found_score = f1.compute(
-    references=found['sentiment'], 
-    predictions=found['pred'], 
-    average='macro'
-)
-print(found_score)
+precision = evaluate.load("precision")
+recall = evaluate.load("recall")
+accuracy = evaluate.load("accuracy")
 
 
 # per sentiment score
 for i in range(4):
-    #print(sent.collect())
-    sent = q.with_columns(
+    subset = q.with_columns(
         sentiment=pl.col('sentiment').eq(i).cast(pl.Int64),
         pred=pl.col('pred').eq(i).cast(pl.Int64)
     ).collect()
-    #print(sent)
-    sent_score = f1.compute(
-        references=sent['sentiment'], 
-        predictions=sent['pred'], 
-    )
-    print(f"sentiment {i}:", sent_score)
-
-
-
+    f1_score = f1.compute(references=subset['sentiment'], predictions=subset['pred'])
+    precision_score = precision.compute(references=subset['sentiment'], predictions=subset['pred'])
+    recall_score = recall.compute(references=subset['sentiment'], predictions=subset['pred'])
+    accuracy_score = accuracy.compute(references=subset['sentiment'], predictions=subset['pred'])
+    print(f"sentiment {i}: {f1_score | precision_score | recall_score | accuracy_score}")
+    
 df = q.collect()
-score = f1.compute(references=df['sentiment'], predictions=df['pred'], average='macro')
+f1_score = f1.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
+precision_score = precision.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
+recall_score = recall.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
+accuracy_score = accuracy.compute(references=subset['sentiment'], predictions=subset['pred'])
 
-print(score)
+
+print(f"avg for sentiment: f1 = {f1_score | precision_score | recall_score | accuracy_score}")
+
+f1_scores = []
+precision_scores = []
+recall_scores = []
+accuracy_scores = []
+"""
+# per aspect score
+for aspect in list(df['aspect'].unique()):
+    subset = q.filter(pl.col('aspect') == aspect).collect()
+    f1_score = f1.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
+    precision_score = precision.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
+    recall_score = recall.compute(references=subset['sentiment'], predictions=subset['pred'], average='macro')
+    accuracy_score = accuracy.compute(references=subset['sentiment'], predictions=subset['pred'])
+  
+    print(f"aspect {aspect}: {f1_score | precision_score | recall_score | accuracy_score}")
+
+    # Добавление средних значений в соответствующие списки
+    f1_scores.append(f1_score['f1'])
+    precision_scores.append(precision_score['precision'])
+    recall_scores.append(recall_score['recall'])
+    accuracy_scores.append(accuracy_score['accuracy'])
+
+# Расчет среднего значения для каждой метрики
+avg_f1_score = average(f1_scores)
+avg_precision_score = average(precision_scores)
+avg_recall_score = average(recall_scores)
+avg_accuracy_score = average(accuracy_scores)
+
+# Вывод средних значений
+print(f"avg for aspects: {avg_f1_score}, {avg_precision_score}, {avg_recall_score}, {avg_accuracy_score}")
+"""
